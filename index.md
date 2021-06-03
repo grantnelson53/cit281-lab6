@@ -1,37 +1,71 @@
-## Welcome to GitHub Pages
+## Lab 6
 
-You can use the [editor on GitHub](https://github.com/grantnelson53/cit281-lab6/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+In this lab, we learned all about classes 
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Source Code 
 
-### Markdown
+    class Book {
+      constructor(title, author, pubDate, isbn) {
+        this.title = title;
+        this.author = author;
+        this.pubDate = pubDate;
+        this.isbn = isbn;
+      }
+    }
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+    class Library {
+      constructor(name) {
+        this._name = name;
+        this._books = [];
+      }
+      get books() {
+        // Return copy of books
+        return JSON.parse(JSON.stringify(this._books));
+      }
+      get count() {
+        return this._books.length;
+      }
+      addBook(book = {}) {
+        const { title = "", author = "", pubDate = "", isbn = "" } = book;
+        if (title.length > 0 && author.length > 0) {
+          const newBook = { title, author, pubDate, isbn };
+          this._books.push(newBook);
+        }
+      }
+      listBooks() {
+        for (const book of this._books) {
+          const { title, author, pubDate, isbn } = book;
+          console.log(`Title: ${title}, Author: ${author}, PubDate: ${pubDate}, ISBN: ${isbn}`);
+        }
+      }
 
-```markdown
-Syntax highlighted code block
+      deleteBook(isbn) {
 
-# Header 1
-## Header 2
-### Header 3
+        let indexOfBookToRemove = null;
+        for (let index = 0; index < this._books.length; index++) {
+            let currentBook = this._books[index];
+            if (currentBook.isbn == isbn) {
+                indexOfBookToRemove = index;
+                break;
+            }
+        }
 
-- Bulleted
-- List
+        this._books.splice(indexOfBookToRemove, 1);
 
-1. Numbered
-2. List
+      }
+    }
 
-**Bold** and _Italic_ and `Code` text
 
-[Link](url) and ![Image](src)
-```
+    const myBook = new Book("AP Calc Crash Course", "Grant L. Nelson", "04/20/1969", "111566187423");
+    const atomicHabits = new Book("Atomic Habits", "James Clear", "10/16/2018", "123456789048");
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+    const uoLibrary = new Library("Knight Library");
+    uoLibrary.addBook(myBook);
+    uoLibrary.addBook(atomicHabits);
+    //console.log(myBook);
+    console.log(`Book count: ${uoLibrary.count}`);
+    uoLibrary.listBooks();
 
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/grantnelson53/cit281-lab6/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+    console.log("Deleting Book");
+    uoLibrary.deleteBook("111566187423");
+    uoLibrary.listBooks();
